@@ -103,9 +103,10 @@ class CakePage extends StatelessWidget {
                         margin: const EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
                         height: 250.0,
                         width: 250.0,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage('assets/cake.png')),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(image: AssetImage(() {
+                            return 'assets/cake.png';
+                          }())),
                         ),
                       ),
                       const SizedBox(
@@ -167,9 +168,10 @@ class CakePage extends StatelessWidget {
                     builder: (context, state) {
                       double price = 84.99 * state.quantity;
                       String bigNum = price.toInt().toString();
-                      String smallNum =
-                          int.tryParse(price.toStringAsFixed(2).split('.')[1])
-                              .toString();
+                      String smallNum = (price - price.toInt())
+                          .toStringAsFixed(2)
+                          .split('.')[1];
+
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
