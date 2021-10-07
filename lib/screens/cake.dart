@@ -70,44 +70,45 @@ class CakePage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20.0),
-                    child: BlocBuilder<NavigationBloc, NavigationState>(
-                      builder: (context, state) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            NavButton(
-                              index: 0,
-                              text: '1kg',
-                            ),
-                            NavButton(
-                              index: 1,
-                              text: '2kg',
-                            ),
-                            NavButton(
-                              index: 2,
-                              text: '3kg',
-                            ),
-                            NavButton(
-                              index: 3,
-                              text: '4kg',
-                            ),
-                          ],
-                        );
-                      },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        NavButton(
+                          index: 0,
+                          text: '1kg',
+                        ),
+                        NavButton(
+                          index: 1,
+                          text: '2kg',
+                        ),
+                        NavButton(
+                          index: 2,
+                          text: '3kg',
+                        ),
+                        NavButton(
+                          index: 3,
+                          text: '4kg',
+                        ),
+                      ],
                     ),
                   ),
                   Row(
                     children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
-                        height: 250.0,
-                        width: 250.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(image: AssetImage(() {
-                            return 'assets/cake.png';
-                          }())),
-                        ),
+                      BlocBuilder<NavigationBloc, NavigationState>(
+                        builder: (context, state) {
+                          return Container(
+                            margin:
+                                const EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
+                            height: 250.0,
+                            width: 250.0,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(image: AssetImage(() {
+                                return state.url;
+                              }())),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(
                         width: 60.0,
