@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hello_flutter/nav/nav_bloc.dart';
 import 'package:hello_flutter/nav/nav_event.dart';
 import 'package:hello_flutter/nav/nav_state.dart';
+import 'package:hello_flutter/quantity/quantity_bloc.dart';
+import 'package:hello_flutter/quantity/quantity_event.dart';
+import 'package:hello_flutter/quantity/quantity_state.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -12,7 +15,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(primaryColor: const Color(0xff7b7517)),
       debugShowCheckedModeBanner: false,
-      home: CakePage(),
+      home: const CakePage(),
     );
   }
 }
@@ -31,15 +34,22 @@ class CakePage extends StatelessWidget {
         leading: const Icon(Icons.arrow_back_ios),
         actions: const [
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0),
             child: Icon(Icons.favorite_border),
           )
         ],
         backgroundColor: const Color(0x00000000),
         elevation: 0,
       ),
-      body: BlocProvider(
-        create: (context) => NavigationBloc(),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => NavigationBloc(),
+          ),
+          BlocProvider(
+            create: (context) => QuantityBloc(),
+          ),
+        ],
         child: Center(
           child: ListView(
             children: [
@@ -101,67 +111,89 @@ class CakePage extends StatelessWidget {
                       const SizedBox(
                         width: 60.0,
                       ),
-                      Column(
-                        children: [
-                          InkWell(
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                            onTap: () {},
-                          ),
-                          const SizedBox(
-                            height: 15.0,
-                          ),
-                          Container(
-                            height: 40.0,
-                            width: 40.0,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff7b7517),
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                '1',
-                                style: TextStyle(color: Colors.white),
+                      BlocBuilder<QuantityBloc, QuantityState>(
+                        builder: (context, state) {
+                          return Column(
+                            children: [
+                              InkWell(
+                                child: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {
+                                  context
+                                      .read<QuantityBloc>()
+                                      .add(IncrementEvent());
+                                },
                               ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15.0,
-                          ),
-                          InkWell(
-                            child: const Icon(
-                              Icons.remove,
-                              color: Colors.white,
-                            ),
-                            onTap: () {},
-                          ),
-                        ],
+                              const SizedBox(
+                                height: 15.0,
+                              ),
+                              Container(
+                                height: 40.0,
+                                width: 40.0,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff7b7517),
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    state.quantity.toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15.0,
+                              ),
+                              InkWell(
+                                child: const Icon(
+                                  Icons.remove,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {
+                                  context
+                                      .read<QuantityBloc>()
+                                      .add(DecrementEvent());
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: const [
-                      Text(
-                        '\$84.',
-                        style: TextStyle(
-                            fontSize: 36.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 15.0, right: 25.0),
-                        child: Text(
-                          '99',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.white,
+                  BlocBuilder<QuantityBloc, QuantityState>(
+                    builder: (context, state) {
+                      double price = 84.99 * state.quantity;
+                      String bigNum = price.toInt().toString();
+                      String smallNum =
+                          int.tryParse(price.toStringAsFixed(2).split('.')[1])
+                              .toString();
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            '\$$bigNum.',
+                            style: const TextStyle(
+                                fontSize: 36.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
-                        ),
-                      ),
-                    ],
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 15.0, right: 25.0),
+                            child: Text(
+                              smallNum,
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
