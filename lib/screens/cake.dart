@@ -1,28 +1,46 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hello_flutter/nav/nav_bloc.dart';
+import 'package:hello_flutter/nav/nav_event.dart';
+import 'package:hello_flutter/nav/nav_state.dart';
 
-class Cake extends StatelessWidget {
-  const Cake({Key? key}) : super(key: key);
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(primaryColor: const Color(0xff7b7517)),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        extendBodyBehindAppBar: false,
-        backgroundColor: const Color(0xff2f304f),
-        appBar: AppBar(
-          leading: const Icon(Icons.arrow_back_ios),
-          actions: const [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Icon(Icons.favorite_border),
-            )
-          ],
-          backgroundColor: const Color(0x00000000),
-          elevation: 0,
-        ),
-        body: Center(
+      home: CakePage(),
+    );
+  }
+}
+
+class CakePage extends StatelessWidget {
+  const CakePage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: false,
+      backgroundColor: const Color(0xff2f304f),
+      appBar: AppBar(
+        leading: const Icon(Icons.arrow_back_ios),
+        actions: const [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Icon(Icons.favorite_border),
+          )
+        ],
+        backgroundColor: const Color(0x00000000),
+        elevation: 0,
+      ),
+      body: BlocProvider(
+        create: (context) => NavigationBloc(),
+        child: Center(
           child: ListView(
             children: [
               Column(
@@ -42,75 +60,31 @@ class Cake extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 25),
-                          decoration: BoxDecoration(
-                              color: const Color(0xff7b7517),
-                              border: Border.all(
-                                  width: 1.0, color: const Color(0xff7b7517)),
-                              borderRadius: BorderRadius.circular(25.0)),
-                          child: InkWell(
-                            child: const Text(
-                              '1kg',
-                              style: TextStyle(color: Colors.white),
+                    child: BlocBuilder<NavigationBloc, NavigationState>(
+                      builder: (context, state) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            NavButton(
+                              index: 0,
+                              text: '1kg',
                             ),
-                            onTap: () {},
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 25),
-                          decoration: BoxDecoration(
-                              //color: Color(0xff7b7517),
-                              border: Border.all(
-                                  width: 1.0, color: const Color(0xff7b7517)),
-                              borderRadius: BorderRadius.circular(25.0)),
-                          child: InkWell(
-                            child: const Text(
-                              '2kg',
-                              style: TextStyle(color: Colors.white),
+                            NavButton(
+                              index: 1,
+                              text: '2kg',
                             ),
-                            onTap: () {},
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 25),
-                          decoration: BoxDecoration(
-                              //color: Color(0xff7b7517),
-                              border: Border.all(
-                                  width: 1.0, color: const Color(0xff7b7517)),
-                              borderRadius: BorderRadius.circular(25.0)),
-                          child: InkWell(
-                            child: const Text(
-                              '3kg',
-                              style: TextStyle(color: Colors.white),
+                            NavButton(
+                              index: 2,
+                              text: '3kg',
                             ),
-                            onTap: () {},
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 25),
-                          decoration: BoxDecoration(
-                              //color: Color(0xff7b7517),
-                              border: Border.all(
-                                  width: 1.0, color: const Color(0xff7b7517)),
-                              borderRadius: BorderRadius.circular(25.0)),
-                          child: InkWell(
-                            child: const Text(
-                              '4kg',
-                              style: TextStyle(color: Colors.white),
+                            NavButton(
+                              index: 3,
+                              text: '4kg',
                             ),
-                            onTap: () {},
-                          ),
-                        ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
                   ),
                   Row(
@@ -382,6 +356,48 @@ class Cake extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class NavButton extends StatelessWidget {
+  final int index;
+  final String text;
+  const NavButton({
+    Key? key,
+    required this.index,
+    required this.text,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<NavigationBloc, NavigationState>(
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: () {
+            context
+                .read<NavigationBloc>()
+                .add(ButtonClickedEvent(index: index));
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            decoration: BoxDecoration(
+                color: state.index == index
+                    ? Theme.of(context).primaryColor
+                    : Colors.transparent,
+                border: Border.all(width: 1.0, color: const Color(0xff7b7517)),
+                borderRadius: BorderRadius.circular(25.0)),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: state.index == index
+                    ? Colors.white
+                    : Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
