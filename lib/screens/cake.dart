@@ -26,12 +26,12 @@ class App extends StatelessWidget {
         idleText: 'pullDownToRefresh',
       ),
       footerBuilder: () => ClassicFooter(
-        loadingIcon: Icon(Icons.refresh),
+        loadingIcon: const Icon(Icons.refresh),
         canLoadingText: 'releaseToLoadMore',
         loadingText: 'loading',
         idleText: 'pullToLoadMore',
         idleIcon: Container(),
-        noMoreIcon: Icon(Icons.no_accounts),
+        noMoreIcon: const Icon(Icons.no_accounts),
       ),
       headerTriggerDistance: 80.0,
       springDescription:
@@ -113,370 +113,362 @@ class _CakePageState extends State<CakePage> {
               controller: _refreshController,
               enablePullDown: true,
               enablePullUp: false,
-              child: Center(
-                child: ListView(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    const Text(
+                      'Fruits Cake',
+                      style: TextStyle(fontSize: 32.0, color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 15.0,
+                    ),
+                    const Text(
+                      'strawberry & kiwi special',
+                      style:
+                          TextStyle(fontSize: 18.0, color: Color(0xff7b7517)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          NavButton(
+                            index: 0,
+                            text: '1kg',
+                          ),
+                          NavButton(
+                            index: 1,
+                            text: '2kg',
+                          ),
+                          NavButton(
+                            index: 2,
+                            text: '3kg',
+                          ),
+                          NavButton(
+                            index: 3,
+                            text: '4kg',
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
                       children: [
-                        const Text(
-                          'Fruits Cake',
-                          style: TextStyle(fontSize: 32.0, color: Colors.white),
+                        BlocBuilder<NavigationBloc, NavigationState>(
+                          builder: (context, state) {
+                            if (state.status == NavigationStateStatus.loading) {
+                              return Container(
+                                margin: const EdgeInsets.fromLTRB(
+                                    20.0, 5.0, 5.0, 5.0),
+                                height: 250.0,
+                                width: 250.0,
+                                child: const Center(
+                                    child: CircularProgressIndicator()),
+                              );
+                            }
+
+                            return Container(
+                              margin: const EdgeInsets.fromLTRB(
+                                  20.0, 5.0, 5.0, 5.0),
+                              height: 250.0,
+                              width: 250.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(state.url),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(
-                          height: 15.0,
-                        ),
-                        const Text(
-                          'strawberry & kiwi special',
-                          style: TextStyle(
-                              fontSize: 18.0, color: Color(0xff7b7517)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            //crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              NavButton(
-                                index: 0,
-                                text: '1kg',
-                              ),
-                              NavButton(
-                                index: 1,
-                                text: '2kg',
-                              ),
-                              NavButton(
-                                index: 2,
-                                text: '3kg',
-                              ),
-                              NavButton(
-                                index: 3,
-                                text: '4kg',
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            BlocBuilder<NavigationBloc, NavigationState>(
-                              builder: (context, state) {
-                                if (state.status ==
-                                    NavigationStateStatus.loading) {
-                                  return Container(
-                                    margin: const EdgeInsets.fromLTRB(
-                                        20.0, 5.0, 5.0, 5.0),
-                                    height: 250.0,
-                                    width: 250.0,
-                                    child: const Center(
-                                        child: CircularProgressIndicator()),
-                                  );
-                                }
-
-                                return Container(
-                                  margin: const EdgeInsets.fromLTRB(
-                                      20.0, 5.0, 5.0, 5.0),
-                                  height: 250.0,
-                                  width: 250.0,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(state.url),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(
-                              width: 60.0,
-                            ),
-                            BlocBuilder<QuantityBloc, QuantityState>(
-                              builder: (context, state) {
-                                return Column(
-                                  children: [
-                                    InkWell(
-                                      child: const Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                      ),
-                                      onTap: () {
-                                        context
-                                            .read<QuantityBloc>()
-                                            .add(IncrementEvent());
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 15.0,
-                                    ),
-                                    Container(
-                                      height: 40.0,
-                                      width: 40.0,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xff7b7517),
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          state.quantity.toString(),
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 15.0,
-                                    ),
-                                    InkWell(
-                                      child: const Icon(
-                                        Icons.remove,
-                                        color: Colors.white,
-                                      ),
-                                      onTap: () {
-                                        context
-                                            .read<QuantityBloc>()
-                                            .add(DecrementEvent());
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ],
+                          width: 60.0,
                         ),
                         BlocBuilder<QuantityBloc, QuantityState>(
                           builder: (context, state) {
-                            double price = 84.99 * state.quantity;
-                            String bigNum = price.toInt().toString();
-                            String smallNum = (price - price.toInt())
-                                .toStringAsFixed(2)
-                                .split('.')[1];
-
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                            return Column(
                               children: [
-                                Text(
-                                  '\$$bigNum.',
-                                  style: const TextStyle(
-                                      fontSize: 36.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                InkWell(
+                                  child: const Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                  ),
+                                  onTap: () {
+                                    context
+                                        .read<QuantityBloc>()
+                                        .add(IncrementEvent());
+                                  },
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 15.0, right: 25.0),
-                                  child: Text(
-                                    smallNum,
-                                    style: const TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.white,
+                                const SizedBox(
+                                  height: 15.0,
+                                ),
+                                Container(
+                                  height: 40.0,
+                                  width: 40.0,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff7b7517),
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      state.quantity.toString(),
+                                      style:
+                                          const TextStyle(color: Colors.white),
                                     ),
                                   ),
+                                ),
+                                const SizedBox(
+                                  height: 15.0,
+                                ),
+                                InkWell(
+                                  child: const Icon(
+                                    Icons.remove,
+                                    color: Colors.white,
+                                  ),
+                                  onTap: () {
+                                    context
+                                        .read<QuantityBloc>()
+                                        .add(DecrementEvent());
+                                  },
                                 ),
                               ],
                             );
                           },
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: BlocBuilder<NavigationBloc, NavigationState>(
-                            builder: (context, state) {
-                              int quantityEggs = 4 + state.index * 4;
-                              int quantityVanilla = 2 + state.index * 2;
-                              int quantitySugar = 1 + state.index;
+                      ],
+                    ),
+                    BlocBuilder<QuantityBloc, QuantityState>(
+                      builder: (context, state) {
+                        double price = 84.99 * state.quantity;
+                        String bigNum = price.toInt().toString();
+                        String smallNum = (price - price.toInt())
+                            .toStringAsFixed(2)
+                            .split('.')[1];
 
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xff212129),
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20.0),
-                                        bottomLeft: Radius.circular(20.0),
-                                      ),
-                                    ),
-                                    width: 120.0,
-                                    height: 100.0,
-                                    padding: const EdgeInsets.only(top: 15.0),
-                                    child: Column(
-                                      children: [
-                                        const Image(
-                                          height: 50.0,
-                                          image: AssetImage('assets/eggs.png'),
-                                          fit: BoxFit.fill,
-                                        ),
-                                        Text(
-                                          '${quantityEggs.toString()} Eggs',
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 120.0,
-                                    height: 100.0,
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xff212129),
-                                      border: Border(
-                                        left: BorderSide(
-                                          color: Color(0xff8f9094),
-                                        ),
-                                        right: BorderSide(
-                                          color: Color(0xff8f9094),
-                                        ),
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.only(top: 15.0),
-                                    child: Column(
-                                      children: [
-                                        const Image(
-                                          height: 50.0,
-                                          image:
-                                              AssetImage('assets/cupcake.png'),
-                                          fit: BoxFit.fill,
-                                        ),
-                                        Text(
-                                          '${quantityVanilla.toString()} tsp vanilla',
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 120.0,
-                                    height: 100.0,
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xff212129),
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(20.0),
-                                        bottomRight: Radius.circular(20.0),
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.only(top: 15.0),
-                                    child: Column(
-                                      children: [
-                                        const Image(
-                                          height: 50.0,
-                                          image: AssetImage('assets/sugar.png'),
-                                          fit: BoxFit.fill,
-                                        ),
-                                        Text(
-                                          '${quantitySugar.toString()} ${quantitySugar == 1 ? 'cup' : 'cups'} sugar',
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                        Row(
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Container(
-                              height: 120.0,
-                              padding:
-                                  const EdgeInsets.only(top: 15.0, left: 10.0),
-                              child: const Image(
-                                image: AssetImage('assets/map.png'),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20.0,
+                            Text(
+                              '\$$bigNum.',
+                              style: const TextStyle(
+                                  fontSize: 36.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                    'DELIVERY',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Text(
-                                    '45, Amarlands',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Nr. Hamer Road, London',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ],
+                              padding:
+                                  const EdgeInsets.only(top: 15.0, right: 25.0),
+                              child: Text(
+                                smallNum,
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                ),
                               ),
-                            )
+                            ),
                           ],
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: BlocBuilder<NavigationBloc, NavigationState>(
+                        builder: (context, state) {
+                          int quantityEggs = 4 + state.index * 4;
+                          int quantityVanilla = 2 + state.index * 2;
+                          int quantitySugar = 1 + state.index;
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xff212129),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20.0),
+                                    bottomLeft: Radius.circular(20.0),
+                                  ),
+                                ),
+                                width: 120.0,
+                                height: 100.0,
+                                padding: const EdgeInsets.only(top: 15.0),
+                                child: Column(
+                                  children: [
+                                    const Image(
+                                      height: 50.0,
+                                      image: AssetImage('assets/eggs.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Text(
+                                      '${quantityEggs.toString()} Eggs',
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: 120.0,
+                                height: 100.0,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xff212129),
+                                  border: Border(
+                                    left: BorderSide(
+                                      color: Color(0xff8f9094),
+                                    ),
+                                    right: BorderSide(
+                                      color: Color(0xff8f9094),
+                                    ),
+                                  ),
+                                ),
+                                padding: const EdgeInsets.only(top: 15.0),
+                                child: Column(
+                                  children: [
+                                    const Image(
+                                      height: 50.0,
+                                      image: AssetImage('assets/cupcake.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Text(
+                                      '${quantityVanilla.toString()} tsp vanilla',
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: 120.0,
+                                height: 100.0,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xff212129),
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(20.0),
+                                    bottomRight: Radius.circular(20.0),
+                                  ),
+                                ),
+                                padding: const EdgeInsets.only(top: 15.0),
+                                child: Column(
+                                  children: [
+                                    const Image(
+                                      height: 50.0,
+                                      image: AssetImage('assets/sugar.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Text(
+                                      '${quantitySugar.toString()} ${quantitySugar == 1 ? 'cup' : 'cups'} sugar',
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          height: 120.0,
+                          padding: const EdgeInsets.only(top: 15.0, left: 10.0),
+                          child: const Image(
+                            image: AssetImage('assets/map.png'),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20.0,
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 10.0, left: 15.0),
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Ratings',
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'DELIVERY',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              const SizedBox(
-                                width: 20.0,
+                              Text(
+                                '45, Amarlands',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
                               ),
-                              Row(
-                                children: const [
-                                  Icon(
-                                    Icons.star,
-                                    color: Color(0xffffeb38),
-                                  ),
-                                  Icon(
-                                    Icons.star,
-                                    color: Color(0xffffeb38),
-                                  ),
-                                  Icon(
-                                    Icons.star,
-                                    color: Color(0xffffeb38),
-                                  ),
-                                  Icon(
-                                    Icons.star,
-                                    color: Color(0xffffeb38),
-                                  ),
-                                  HalfFilledIcon(
-                                    icon: Icons.star,
-                                    size: 25,
-                                    color: Color(0xffffeb38),
-                                  ),
-                                  Text(
-                                    '(55)',
-                                    style: TextStyle(
-                                      color: Colors.white60,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                ],
+                              Text(
+                                'Nr. Hamer Road, London',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 100.0,
-                        ),
+                        )
                       ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0, left: 15.0),
+                      child: Row(
+                        children: [
+                          const Text(
+                            'Ratings',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+                          Row(
+                            children: const [
+                              Icon(
+                                Icons.star,
+                                color: Color(0xffffeb38),
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Color(0xffffeb38),
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Color(0xffffeb38),
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Color(0xffffeb38),
+                              ),
+                              HalfFilledIcon(
+                                icon: Icons.star,
+                                size: 25,
+                                color: Color(0xffffeb38),
+                              ),
+                              Text(
+                                '(55)',
+                                style: TextStyle(
+                                  color: Colors.white60,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 100.0,
                     ),
                   ],
                 ),
