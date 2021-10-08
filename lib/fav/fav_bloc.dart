@@ -9,7 +9,6 @@ class FavouriteBloc extends Bloc<FavouriteEvent, FavouriteState> {
   Stream<FavouriteState> mapEventToState(FavouriteEvent event) async* {
     if (event is FavouritePressedEvent) {
       yield FavouriteState(pressed: !state.pressed);
-      print(state.pressed);
     }
   }
 }

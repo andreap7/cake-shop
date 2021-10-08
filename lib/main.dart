@@ -23,5 +23,5 @@ Kao dodatak na ovaj izazov napraviti:
 */
 
 void main() {
-  runApp(App());
+  runApp(const App());
 }

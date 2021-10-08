@@ -5,8 +5,13 @@ import 'nav_state.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc()
-      : super(NavigationState(
-            index: 0, url: _getUrl(0), status: NavigationStateStatus.initial));
+      : super(
+          NavigationState(
+            index: 0,
+            url: _getUrl(0),
+            status: NavigationStateStatus.initial,
+          ),
+        );
 
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
