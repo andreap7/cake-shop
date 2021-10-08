@@ -12,6 +12,8 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
     if (event is ButtonClickedEvent) {
       yield* _clicked(event);
+    } else if (event is NavigationRefreshEvent) {
+      yield* _refresh();
     }
   }
 
@@ -22,6 +24,14 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
         index: event.index,
         url: _getUrl(event.index),
         status: NavigationStateStatus.finished);
+  }
+
+  Stream<NavigationState> _refresh() async* {
+    yield state.copyWith(
+      index: 0,
+      url: _getUrl(0),
+      status: NavigationStateStatus.refreshed,
+    );
   }
 }
 

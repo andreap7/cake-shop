@@ -2,6 +2,7 @@ enum NavigationStateStatus {
   initial,
   loading,
   finished,
+  refreshed,
 }
 
 class NavigationState {

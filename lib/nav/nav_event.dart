@@ -7,3 +7,5 @@ class ButtonClickedEvent extends NavigationEvent {
     required this.index,
   });
 }
+
+class NavigationRefreshEvent extends NavigationEvent {}
