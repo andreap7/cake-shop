@@ -5,7 +5,7 @@ enum NavigationStateStatus {
 }
 
 class NavigationState {
-  int? index;
+  int index;
   String url;
   NavigationStateStatus? status;
 

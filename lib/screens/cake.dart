@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hello_flutter/fav/fav_bloc.dart';
+import 'package:hello_flutter/fav/fav_event.dart';
+import 'package:hello_flutter/fav/fav_state.dart';
 import 'package:hello_flutter/nav/nav_bloc.dart';
 import 'package:hello_flutter/nav/nav_event.dart';
 import 'package:hello_flutter/nav/nav_state.dart';
@@ -27,30 +30,42 @@ class CakePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: false,
-      backgroundColor: const Color(0xff2f304f),
-      appBar: AppBar(
-        leading: const Icon(Icons.arrow_back_ios),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Icon(Icons.favorite_border),
-          )
-        ],
-        backgroundColor: const Color(0x00000000),
-        elevation: 0,
-      ),
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => NavigationBloc(),
-          ),
-          BlocProvider(
-            create: (context) => QuantityBloc(),
-          ),
-        ],
-        child: Center(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => NavigationBloc(),
+        ),
+        BlocProvider(
+          create: (context) => QuantityBloc(),
+        ),
+        BlocProvider(
+          create: (context) => FavouriteBloc(),
+        ),
+      ],
+      child: Scaffold(
+        extendBodyBehindAppBar: false,
+        backgroundColor: const Color(0xff2f304f),
+        appBar: AppBar(
+          leading: const Icon(Icons.arrow_back_ios),
+          actions: [
+            BlocBuilder<FavouriteBloc, FavouriteState>(
+              builder: (context, state) {
+                return IconButton(
+                  tooltip: 'Favourite',
+                  icon: (state.pressed)
+                      ? const Icon(Icons.favorite)
+                      : const Icon(Icons.favorite_border),
+                  onPressed: () {
+                    context.read<FavouriteBloc>().add(FavouritePressedEvent());
+                  },
+                );
+              },
+            )
+          ],
+          backgroundColor: const Color(0x00000000),
+          elevation: 0,
+        ),
+        body: Center(
           child: ListView(
             children: [
               Column(
@@ -211,89 +226,97 @@ class CakePage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            color: Color(0xff212129),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20.0),
-                              bottomLeft: Radius.circular(20.0),
-                            ),
-                          ),
-                          width: 120.0,
-                          height: 100.0,
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Column(
-                            children: const [
-                              Image(
-                                height: 50.0,
-                                image: AssetImage('assets/eggs.png'),
-                                fit: BoxFit.fill,
+                    child: BlocBuilder<NavigationBloc, NavigationState>(
+                      builder: (context, state) {
+                        int quantityEggs = 4 + state.index * 4;
+                        int quantityVanilla = 2 + state.index * 2;
+                        int quantitySugar = 1 + state.index;
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Color(0xff212129),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20.0),
+                                  bottomLeft: Radius.circular(20.0),
+                                ),
                               ),
-                              Text(
-                                '4 Eggs',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 120.0,
-                          height: 100.0,
-                          decoration: const BoxDecoration(
-                            color: Color(0xff212129),
-                            border: Border(
-                              left: BorderSide(
-                                color: Color(0xff8f9094),
-                              ),
-                              right: BorderSide(
-                                color: Color(0xff8f9094),
+                              width: 120.0,
+                              height: 100.0,
+                              padding: const EdgeInsets.only(top: 15.0),
+                              child: Column(
+                                children: [
+                                  const Image(
+                                    height: 50.0,
+                                    image: AssetImage('assets/eggs.png'),
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Text(
+                                    '${quantityEggs.toString()} Eggs',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Column(
-                            children: const [
-                              Image(
-                                height: 50.0,
-                                image: AssetImage('assets/cupcake.png'),
-                                fit: BoxFit.fill,
+                            Container(
+                              width: 120.0,
+                              height: 100.0,
+                              decoration: const BoxDecoration(
+                                color: Color(0xff212129),
+                                border: Border(
+                                  left: BorderSide(
+                                    color: Color(0xff8f9094),
+                                  ),
+                                  right: BorderSide(
+                                    color: Color(0xff8f9094),
+                                  ),
+                                ),
                               ),
-                              Text(
-                                '2 tsp vanilla',
-                                style: TextStyle(color: Colors.white),
+                              padding: const EdgeInsets.only(top: 15.0),
+                              child: Column(
+                                children: [
+                                  const Image(
+                                    height: 50.0,
+                                    image: AssetImage('assets/cupcake.png'),
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Text(
+                                    '${quantityVanilla.toString()} tsp vanilla',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 120.0,
-                          height: 100.0,
-                          decoration: const BoxDecoration(
-                            color: Color(0xff212129),
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20.0),
-                              bottomRight: Radius.circular(20.0),
                             ),
-                          ),
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Column(
-                            children: const [
-                              Image(
-                                height: 50.0,
-                                image: AssetImage('assets/sugar.png'),
-                                fit: BoxFit.fill,
+                            Container(
+                              width: 120.0,
+                              height: 100.0,
+                              decoration: const BoxDecoration(
+                                color: Color(0xff212129),
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(20.0),
+                                  bottomRight: Radius.circular(20.0),
+                                ),
                               ),
-                              Text(
-                                '1 cup sugar',
-                                style: TextStyle(color: Colors.white),
+                              padding: const EdgeInsets.only(top: 15.0),
+                              child: Column(
+                                children: [
+                                  const Image(
+                                    height: 50.0,
+                                    image: AssetImage('assets/sugar.png'),
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Text(
+                                    '${quantitySugar.toString()} ${quantitySugar == 1 ? 'cup' : 'cups'} sugar',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                   Row(

@@ -17,7 +17,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
 
   Stream<NavigationState> _clicked(ButtonClickedEvent event) async* {
     yield state.copyWith(status: NavigationStateStatus.loading);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     yield state.copyWith(
         index: event.index,
         url: _getUrl(event.index),
