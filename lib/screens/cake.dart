@@ -97,15 +97,26 @@ class CakePage extends StatelessWidget {
                     children: [
                       BlocBuilder<NavigationBloc, NavigationState>(
                         builder: (context, state) {
+                          if (state.status == NavigationStateStatus.loading) {
+                            return Container(
+                              margin: const EdgeInsets.fromLTRB(
+                                  20.0, 5.0, 5.0, 5.0),
+                              height: 250.0,
+                              width: 250.0,
+                              child: const Center(
+                                  child: CircularProgressIndicator()),
+                            );
+                          }
+
                           return Container(
                             margin:
                                 const EdgeInsets.fromLTRB(20.0, 5.0, 5.0, 5.0),
                             height: 250.0,
                             width: 250.0,
                             decoration: BoxDecoration(
-                              image: DecorationImage(image: AssetImage(() {
-                                return state.url;
-                              }())),
+                              image: DecorationImage(
+                                image: AssetImage(state.url),
+                              ),
                             ),
                           );
                         },

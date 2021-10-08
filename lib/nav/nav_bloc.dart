@@ -4,7 +4,9 @@ import 'nav_event.dart';
 import 'nav_state.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
-  NavigationBloc() : super(NavigationState(index: 0, url: _getUrl(0)));
+  NavigationBloc()
+      : super(NavigationState(
+            index: 0, url: _getUrl(0), status: NavigationStateStatus.initial));
 
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
@@ -14,7 +16,12 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   }
 
   Stream<NavigationState> _clicked(ButtonClickedEvent event) async* {
-    yield NavigationState(index: event.index, url: _getUrl(event.index));
+    yield state.copyWith(status: NavigationStateStatus.loading);
+    await Future.delayed(Duration(seconds: 1));
+    yield state.copyWith(
+        index: event.index,
+        url: _getUrl(event.index),
+        status: NavigationStateStatus.finished);
   }
 }
 
