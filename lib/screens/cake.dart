@@ -239,36 +239,41 @@ class _CakePageState extends State<CakePage> {
                         ),
                       ],
                     ),
-                    BlocBuilder<QuantityBloc, QuantityState>(
-                      builder: (context, state) {
-                        double price = 84.99 * state.quantity;
-                        String bigNum = price.toInt().toString();
-                        String smallNum = (price - price.toInt())
-                            .toStringAsFixed(2)
-                            .split('.')[1];
+                    BlocBuilder<NavigationBloc, NavigationState>(
+                      builder: (context, navigationState) {
+                        return BlocBuilder<QuantityBloc, QuantityState>(
+                          builder: (context, quantityState) {
+                            double price = 84.99 * quantityState.quantity +
+                                (20 * navigationState.index);
+                            String bigNum = price.toInt().toString();
+                            String smallNum = (price - price.toInt())
+                                .toStringAsFixed(2)
+                                .split('.')[1];
 
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              '\$$bigNum.',
-                              style: const TextStyle(
-                                  fontSize: 36.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 15.0, right: 25.0),
-                              child: Text(
-                                smallNum,
-                                style: const TextStyle(
-                                  fontSize: 14.0,
-                                  color: Colors.white,
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '\$$bigNum.',
+                                  style: const TextStyle(
+                                      fontSize: 36.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                            ),
-                          ],
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 15.0, right: 25.0),
+                                  child: Text(
+                                    smallNum,
+                                    style: const TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
                     ),
